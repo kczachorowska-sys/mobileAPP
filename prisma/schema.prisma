@@ -1,0 +1,152 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id           String     @id @default(cuid())
+  name         String
+  email        String     @unique
+  passwordHash String?
+  profileImage String?
+  postcode     String?
+  town         String?
+  latitude     Float?
+  longitude    Float?
+  accountType  String     @default("rider")
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  favourites   Favourite[]
+  reviews      Review[]
+  reports      Report[]
+  claims       ProviderClaim[]
+}
+
+model Provider {
+  id                  String     @id @default(cuid())
+  slug                String     @unique
+  businessName        String
+  categoryId          String
+  category            Category   @relation(fields: [categoryId], references: [id])
+  description         String?
+  profileImage        String?
+  phone               String?
+  email               String?
+  website             String?
+  whatsapp            String?
+  instagram           String?
+  facebook            String?
+  address             String?
+  postcode            String?
+  town                String?
+  latitude            Float?
+  longitude           Float?
+  serviceRadius       Int?
+  areasCovered        String?
+  priceRange          String?
+  acceptingNewClients Boolean    @default(true)
+  verificationStatus  String     @default("unverified")
+  claimedStatus       String     @default("unclaimed")
+  featuredStatus      String     @default("none")
+  subscriptionStatus  String     @default("free")
+  isDemo              Boolean    @default(false)
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+  services            Service[]
+  reviews             Review[]
+  favourites          Favourite[]
+  reports             Report[]
+  claims              ProviderClaim[]
+  photos              ProviderPhoto[]
+  specialisations     String?
+  qualifications      String?
+}
+
+model Category {
+  id               String     @id @default(cuid())
+  name             String
+  slug             String     @unique
+  description      String?
+  icon             String?
+  parentCategoryId String?
+  parentCategory   Category?  @relation("CategoryHierarchy", fields: [parentCategoryId], references: [id])
+  subcategories    Category[] @relation("CategoryHierarchy")
+  active           Boolean    @default(true)
+  sortOrder        Int        @default(0)
+  providers        Provider[]
+  services         Service[]
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  providerId  String
+  provider    Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id])
+  serviceName String
+  description String?
+  priceFrom   Float?
+  priceTo     Float?
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  providerId String
+  provider   Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  rating     Int
+  reviewText String?
+  status     String   @default("approved")
+  isDemo     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Favourite {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  providerId String
+  provider   Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, providerId])
+}
+
+model ProviderClaim {
+  id                 String   @id @default(cuid())
+  providerId         String
+  provider           Provider @relation(fields: [providerId], references: [id])
+  userId             String
+  user               User     @relation(fields: [userId], references: [id])
+  verificationStatus String   @default("pending")
+  submittedAt        DateTime @default(now())
+  reviewedAt         DateTime?
+}
+
+model Report {
+  id             String   @id @default(cuid())
+  reporterUserId String
+  reporter       User     @relation(fields: [reporterUserId], references: [id])
+  providerId     String
+  provider       Provider @relation(fields: [providerId], references: [id])
+  reason         String
+  description    String?
+  status         String   @default("pending")
+  createdAt      DateTime @default(now())
+  resolvedAt     DateTime?
+}
+
+model ProviderPhoto {
+  id         String   @id @default(cuid())
+  providerId String
+  provider   Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  url        String
+  caption    String?
+  sortOrder  Int      @default(0)
+}

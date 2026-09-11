@@ -1,0 +1,185 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-ivory text-charcoal font-sans;
+    overscroll-behavior-y: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-serif;
+  }
+
+  /* Safe area insets for notched phones */
+  :root {
+    --safe-area-top: env(safe-area-inset-top, 0px);
+    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+@layer components {
+  /* App shell */
+  .app-container {
+    @apply mx-auto w-full max-w-[428px] min-h-screen relative;
+  }
+
+  .page-content {
+    @apply px-5 pb-24 pt-4;
+    padding-top: calc(1rem + var(--safe-area-top));
+    padding-bottom: calc(6rem + var(--safe-area-bottom));
+  }
+
+  /* Cards */
+  .card {
+    @apply bg-white rounded-2xl shadow-sm border border-sand/40;
+    transition: box-shadow 0.2s ease, transform 0.15s ease;
+  }
+
+  .card:active {
+    @apply shadow-none;
+    transform: scale(0.985);
+  }
+
+  .card-elevated {
+    @apply card shadow-md;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply bg-olive text-white font-medium rounded-xl px-6 py-3.5 text-sm
+           active:bg-olive-light transition-colors duration-150
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply bg-cream text-charcoal font-medium rounded-xl px-6 py-3.5 text-sm
+           border border-sand-dark/30
+           active:bg-sand transition-colors duration-150;
+  }
+
+  .btn-outline {
+    @apply bg-transparent text-olive font-medium rounded-xl px-6 py-3.5 text-sm
+           border border-olive/30
+           active:bg-olive/5 transition-colors duration-150;
+  }
+
+  /* Form inputs */
+  .input-field {
+    @apply w-full bg-white border border-sand-dark/40 rounded-xl px-4 py-3.5
+           text-sm text-charcoal placeholder:text-warm-brown/40
+           focus:outline-none focus:border-olive focus:ring-1 focus:ring-olive/20
+           transition-colors duration-150;
+  }
+
+  .select-field {
+    @apply input-field appearance-none bg-no-repeat;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M3 4.5L6 7.5L9 4.5' stroke='%235D4037' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium;
+  }
+
+  .badge-olive {
+    @apply badge bg-olive/10 text-olive;
+  }
+
+  .badge-burgundy {
+    @apply badge bg-burgundy/10 text-burgundy;
+  }
+
+  /* Bottom Navigation */
+  .bottom-nav {
+    @apply fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[428px]
+           bg-white/95 backdrop-blur-md border-t border-sand/60;
+    padding-bottom: var(--safe-area-bottom);
+    z-index: 50;
+  }
+
+  .bottom-nav-inner {
+    @apply flex items-center justify-around px-2 py-2;
+  }
+
+  .nav-item {
+    @apply flex flex-col items-center gap-0.5 py-1.5 px-3 rounded-lg
+           text-warm-brown/50 transition-colors duration-150;
+  }
+
+  .nav-item.active {
+    @apply text-olive;
+  }
+
+  .nav-item span {
+    @apply text-[10px] font-medium;
+  }
+
+  /* Stars */
+  .star-filled {
+    @apply text-amber-400;
+  }
+
+  .star-empty {
+    @apply text-sand-dark/40;
+  }
+
+  /* Divider */
+  .divider {
+    @apply border-t border-sand/60 my-6;
+  }
+
+  /* Section heading */
+  .section-heading {
+    @apply text-lg font-serif text-charcoal mb-4;
+  }
+
+  /* Shimmer placeholder for images */
+  .image-placeholder {
+    @apply bg-gradient-to-r from-cream via-sand/50 to-cream;
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  /* Verified badge */
+  .verified-badge {
+    @apply inline-flex items-center gap-1 text-olive text-xs font-medium;
+  }
+
+  /* Hide scrollbar utility */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
