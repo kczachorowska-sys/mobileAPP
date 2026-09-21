@@ -2,9 +2,19 @@ import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 
 const getBaseUrl = () => {
-  if (Platform.OS === 'web') {
-    const host = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
-    return `http://${host}:3000`;
+  if (Platform.OS === 'web' && typeof window !== 'undefined') {
+    const { hostname, protocol } = window.location;
+    // GitHub Codespaces: replace the port in the subdomain
+    const csMatch = hostname.match(/^(.+)-(\d+)(\.app\.github\.dev)$/);
+    if (csMatch) {
+      return `${protocol}//${csMatch[1]}-3000${csMatch[3]}`;
+    }
+    // Gitpod: replace the port in the subdomain
+    const gpMatch = hostname.match(/^(\d+)-(.+\.gitpod\.io)$/);
+    if (gpMatch) {
+      return `${protocol}//3000-${gpMatch[2]}`;
+    }
+    return `${protocol}//${hostname}:3000`;
   }
   const debuggerHost = Constants.expoConfig?.hostUri;
   if (debuggerHost) {
