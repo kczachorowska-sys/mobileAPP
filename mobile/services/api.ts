@@ -1,6 +1,11 @@
+import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 
 const getBaseUrl = () => {
+  if (Platform.OS === 'web') {
+    const host = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
+    return `http://${host}:3000`;
+  }
   const debuggerHost = Constants.expoConfig?.hostUri;
   if (debuggerHost) {
     const host = debuggerHost.split(':')[0];
